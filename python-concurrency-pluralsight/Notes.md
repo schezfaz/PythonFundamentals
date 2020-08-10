@@ -41,7 +41,40 @@ threading.Thread: constructor
 
 .join() method: suspend all program execution until the thread that  has  started completes execution
 
+ ## Thread LifeCycle
+-  When a program starts, there is only one thread (main thread) that is running
+- Main thread is responsible for imports, creating functions,etc.
+- Creates a new thread 1 :  New thread is in the new state
+- When the main thread calls start on the new thread, it goes into the ready state, available to be scheduled on the CPU
+- Join: Main Thread goes from running state to the blocked state i.e. it is suspended and cannot proceed any execution further
+- Thread 1 goes into the running state and ends
+- Signals the completion to the main thread, and main thread resumes execution
+
+New  --> Ready ----> Running --> Terminated
+
+Blocked state: When thread waits for particular event/condition to take place
+
+
+Each  thread has its own counter: maintaining instructions being  executed in the current time,its own registers  and its own stack
+
+Memory is set aside in a stack place for a thread
+
+Any data or memory owned by a process can be accessed by any of the threads which are a part of the process
+
+Once a thread is started we have little control over how it runs
+
+The OS runs an algorithm, the scheduler which determines what threads run for how long and when, which processor core they run on and when they  will get suspended
+
+Context Switch: Process of saving and restoring the state of a thread or process
+If a thread from another process is switching into, a full process switch occurs which is an expensive process
+
+Thread switching is less expensive than process switching, thus, parallel programming using threads is preferred over parallel processing.
+
+Memory sharing with indetermined scheduling can lead to thread interference/race condition: read/write on same variable (may lead to data corruption)
+- Solution: Thread Synchronisation     
+
+
+
+
  
-
-
 
