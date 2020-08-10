@@ -20,16 +20,28 @@ class threading.Thread(group = None,
                        daemon = None)
 
 __group parameter__: future use, always set to None
+
 __target__ : function to be invoked
+
 __name__ : name for thread, if blank default name = Thread + counter, Thread1, Thread2, etc.
+
 __args__ : arguement tuple for the target function
+
 __kwargs__: dictionary of keyword arguements
+
 __daemon__: whether thread will be terminated if its parent thread terminates or not
 
 in threading-skeleton.py we consider thread to be a worker executing the instructions in the target function
 
 in threading-work.py we consider threads to be units of work
 
+Simplest way to create a thread is to instantiate an object of the thread class
+
+threading.Thread: constructor
+
+.join() method: suspend all program execution until the thread that  has  started completes execution
+
+ 
 
 
 
