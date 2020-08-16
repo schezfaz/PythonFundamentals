@@ -73,6 +73,36 @@ Thread switching is less expensive than process switching, thus, parallel progra
 Memory sharing with indetermined scheduling can lead to thread interference/race condition: read/write on same variable (may lead to data corruption)
 - Solution: Thread Synchronisation     
 
+## Thread Synchronisation
+- Keep shared memory access between threads minimum
+- The more shared memory between threads, the more complex your code gets, the less concurrent it runs because of the need to combat thread interference
+
+__threading.LOCK:__ The lock is in one of 2 states: locked / unlocked 
+- When put in the locked state by one thread, it can only be unlocked by that same thread, cannot be locked or unlocked by any other thread
+
+i.e. Acqurie: signifies a thread putting a lock into a locked state, once the lock is acquired by a thread, it cannot be  acquired by until thread until the lock is released by the first thread (i.e the owner)
+
+When a  thread tries to acquire a lock held by another thread, that thread goes into the blocked state i.e. it's execution is paused and it cannot continue until it acquires the lock i.e. after it is released by the first thread
+
+`lock = threading.Lock()`
+ : creates a lock for the shared resource
+
+`lock.acquire()`
+`..acess shared resource`
+`lock.release()` 
+
+Need to use a try/finally block while accessing shared resource to ensure that if an execption occurs, the lock will get released at some point so as to prevent indefinite blocking of other threads
+
+ with lock: lock is automatically acquired while entering this block and automatically released while leaving the block, even if an exception occurs during shared resource access
+
+ 
+
+
+
+
+
+
+
 
 
 
