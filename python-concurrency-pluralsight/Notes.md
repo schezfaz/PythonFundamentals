@@ -95,12 +95,26 @@ Need to use a try/finally block while accessing shared resource to ensure that i
 
  with lock: lock is automatically acquired while entering this block and automatically released while leaving the block, even if an exception occurs during shared resource access
 
- 
+ * Use locks only when shared variables are modified
+ * locks are not needed for automic operations i.e. single steps like retrieving items, adding items, etc.
 
+ lock.locked() method tells us if the lock has already been acquired or not
 
+### Type of lock: RLock or Re-entering lock
+allows a thread to acquire a lock it already holds. In the regular lock, if a thread that has already acquired the lock tries to acquire the same lock, it will get blocked. RLock fixes this.
 
+## Semaphore: Thread Synchronisation Mechanism
+Sync. primitive that manages an internal counter, instead of a single locked or unlocked switch.
 
+Everytime the thread calls acquire, internal counter is -- (decremented), release()  ++ (incremented)
 
+```
+semaphore = threading.Semaphore()
+semaphore.acquire() --> decrements the counter
+semaphore.release() --> increments the counter
+```
+
+Internal counter can never go below zero.
 
 
 

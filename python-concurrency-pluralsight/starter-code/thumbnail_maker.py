@@ -17,15 +17,27 @@ class ThumbnailMakerService(object):
         self.home_dir = home_dir
         self.input_dir = self.home_dir + os.path.sep + 'incoming'
         self.output_dir = self.home_dir + os.path.sep + 'outgoing'
+        #to get total number of bytes downloaded
+        self.downloaded_bytes = 0
+        #lock to keep shared variable: downloaded_bytes accurate
+        self.dl_lock = threading.Lock()
+
+
 
     def download_image(self,  url):
         #this method will download each image and save it to the input directory
         logging.info("downloading image at URL: " +url)
         img_filename = urlparse(url).path.split('/')[-1]
-        urlretrieve(url, self.input_dir + os.path.sep + img_filename)
-        logging.info("Image saved to : " + self.input_dir +os.path.sep + img_filename)
+        dest_path = self.input_dir + os.path.sep + img_filename
+        urlretrieve(url, dest_path)
 
-
+        #moving critical section dealing with shared memory to a with scope of the lock
+        #gaurantees that even if current thread gets interrupted, no other thread can modify  the downloaded_bytes variable while it has the lock
+        with self.dl_lock:
+            img_size = os.path.getsize(dest_path)
+        self.downloaded_bytes += img_size #here this value could be corrupted and data could be lost if the thread fails to execute properly, thus we use a lock 
+        logging.info("Image [{} bytes ] saved to : {}  ".format(img_size,dest_path))
+        
     def download_images(self, img_url_list):
         # validate inputs
         if not img_url_list:
