@@ -1,4 +1,8 @@
-import math
+#Question:
+# Rearrange the array such that elements at even positions are greater than all elements before it
+# and elements at odd positions are less than all elements before it.
+# Input : [1, 2, 3, 4, 5, 6, 7]
+# Output : [4, 5, 3, 6, 2, 7, 1]
 
 # 1. Get input array
 # 2. sort array in ascending order
@@ -9,6 +13,8 @@ import math
 # 7. place result(6) at even positions in ascending order in output array
 # 8. get lowest m number of digits where m = no. of odd positions
 # 9. place result(7) at odd positions in descending order in output array
+
+import math
 
 input = [1,2,3,4,5,6,7]
 print(input)
