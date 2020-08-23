@@ -21,23 +21,29 @@ class ThumbnailMakerService(object):
         self.downloaded_bytes = 0
         #lock to keep shared variable: downloaded_bytes accurate
         self.dl_lock = threading.Lock()
+        max_concurrent_downloads = 4
+        self.dl_sem = threading.Semaphore(max_concurrent_downloads)
 
 
 
     def download_image(self,  url):
         #this method will download each image and save it to the input directory
-        logging.info("downloading image at URL: " +url)
-        img_filename = urlparse(url).path.split('/')[-1]
-        dest_path = self.input_dir + os.path.sep + img_filename
-        urlretrieve(url, dest_path)
+        self.dl_sem.acquire()
+        try:
+            logging.info("downloading image at URL: " +url)
+            img_filename = urlparse(url).path.split('/')[-1]
+            dest_path = self.input_dir + os.path.sep + img_filename
+            urlretrieve(url, dest_path)
 
-        #moving critical section dealing with shared memory to a with scope of the lock
-        #gaurantees that even if current thread gets interrupted, no other thread can modify  the downloaded_bytes variable while it has the lock
-        with self.dl_lock:
-            img_size = os.path.getsize(dest_path)
-        self.downloaded_bytes += img_size #here this value could be corrupted and data could be lost if the thread fails to execute properly, thus we use a lock 
-        logging.info("Image [{} bytes ] saved to : {}  ".format(img_size,dest_path))
-        
+            #moving critical section dealing with shared memory to a with scope of the lock
+            #gaurantees that even if current thread gets interrupted, no other thread can modify  the downloaded_bytes variable while it has the lock
+            with self.dl_lock:
+                img_size = os.path.getsize(dest_path)
+            self.downloaded_bytes += img_size #here this value could be corrupted and data could be lost if the thread fails to execute properly, thus we use a lock
+            logging.info("Image [{} bytes ] saved to : {}  ".format(img_size,dest_path))
+        finally:
+            self.dl_sem.release()
+
     def download_images(self, img_url_list):
         # validate inputs
         if not img_url_list:
