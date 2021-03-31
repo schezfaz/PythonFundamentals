@@ -116,6 +116,58 @@ semaphore.release() --> increments the counter
 
 Internal counter can never go below zero.
 
+If a thread makes a call to acquire, and value of internal counter is 0  --> thread gets blocked, it  will then wait for another thread to call release to increment the counter before it can continue.
+
+Semaphore can allow one or more threads to run at the same time.
+
+Can be thought of in this way: Semephore has permits it can distribute to threads. Everytime a thread acquires a permit, number of permits in the pool decrease by 1. If there are no permits left with the semaphore, i.e. counter is at 0, it must wait for a thread to release a permit.
+
+Standard semaphore implementation allows you to call release an unlimited number of times. More times than you can call acquire.
+
+Bounded Semaphore implementation: if no. of calls to release > no. of calls to acquire: Error is thrown
+
+```
+num_permits = 3
+semephore = thread.BoundedSemaphore(num_permits)
+```
+
+## Events:
+One thread signals an event, the other threads wait for it. Event object has an internal flag.
+
+The threads that need to wait for the event, do so by calling a wait() method on the event
+
+If event internal flag is false, the thread that calls it will block. Manager or  server thread can call the set method, which will set the internal flag to true.and releases the blocked threads.
+
+event.clear(): resets flag to false, blocks all other calling threads.
+
+## threading.Condition
+--> Combines properties of lock and event
+
+like lock: it has the following funcs: acquire(), release()
+like event: wait(), notify() and notify_all()
+
+implementing a producer/consumer pattern: threading.Condition is user
+
+Easier way of communicating between threads without keeping in mind threads, condition and lock states? ans: QUEUE
+
+## Inter-thread communication using QUEUE
+--> easier to exchange messages between multiple threads
+--> handles all locking semantics
+--> message parsing architecture
+
+4 most common methods:
+- put(): puts an item into the queue
+- get(): removes an item from the queue and returns it
+- task_done(): marks an item that was gotten from the queue as completed/processed
+- join(): blocks until all items in the queue have been prrocessed
+ 
+ get() and put() are blocking calls.
+can specify max number of items in queue.
+
+
+
+
+
 
 
 
