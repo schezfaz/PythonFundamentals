@@ -62,6 +62,31 @@ Choosing @classmethod vs @staticmethod
 
 Named Constructor: Factory Functions i.e. constructs an object with certain configurations
 Can call the factory method directly instead of calling the constructor
+
+**kwargs are used to allow subclasses to thread arguements to base class dunder init and other mehtods
+
+PROPERTIES: encapsulate getter() and setter() methods, properties behave like attributes
+
+self._celcius: _celcius to indicate that this variable is no longer to be considered as part of the public interface
+
+@property decorator: GETTER I.E.  read only attributes
+
+@property
+def celcius(self):
+    return self._celcius
+
+when r4.celcius: property decorator allows method to function like an attribute
+
+@celcius.setter //decorator attribute
+def p(self,value):
+    self._p =value
+
+self encapsulation: even properties of the class go through setter and getter validation
+i.e. self._celcius can be written as self.celius
+
+too many properties can lead to excessive coupling
+
+
 """
 
 class ShippingContainer:
