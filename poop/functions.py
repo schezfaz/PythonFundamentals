@@ -2,6 +2,8 @@
 Positional Arguments: matched with formal arguments by position, in order
 Keyword Arguments: matched with formal arguments by name, any order
 
+Fucntions are defined at runtime
+
 Functions are first class. i.e. functions are objects and can be passed around
 
 __call__(): Allow objects/instaces of classes to be callable objects
@@ -101,3 +103,103 @@ def colour(red, green, blue, **kwargs):
 
 k = {'red':21,'green':68, 'blue': 120, 'alpha' : 52}
 colour(**k)
+
+'''
+Functions defined inside other functions: local functions
+i.e. there will be a new copy of the function made for each enclosing invocation
+
+Local functions are not 'members' of their enclosing functions, they are just local name bindings in the function body
+Local functions help with code readibality and organisation similar to lambdas, more general than lambdas
+
+First class functions: (Returning functions) : where functions can be passed to and returned from other functions/ treated as any piece of data
+Once the local function is returned, the enclosing scope is gone along with any objects it has defined
+
+Closure: Records objects from enclosing scopes: Closure remembers the objects from the enclosing scope that the function will need, it keeps the recorded objects alive for use after the scope is gone
+
+The local function closes over the objects it needs, preventing them from being garbage collected
+
+Implements closure with special attribute: __closure__
+
+Function Factories: Functions that return other functions, returned functions use both their own arguments as well as arguments passed to the function factory
+
+'''
+
+def sort_by_last_letter(strings):
+    def last_letter(s):
+        return s[-1]
+    return sort_by_last_letter(strings, key=last_letter)
+
+# print(sort_by_last_letter(['Schezeen','Fazulbhoy','Peepeepoopoo']))
+
+g = 'global'
+def outer(p='param'):
+    l = 'local'
+    def inner():
+        print(g,p,l)
+    inner()
+
+# outer()
+
+#returning local functions
+
+def enclosing():
+    def local_func():
+        print('local func waddup')
+    return local_func()
+
+enclosing()
+
+def raise_to(exp):
+    def raise_to_exp(x):
+        return pow(x, exp)
+    return raise_to_exp
+
+square = raise_to(2)
+print(square.__closure__)
+print(square(5))
+
+message = 'global'
+
+'''
+Name binding in enclosing scope: in local() we are creating a new name binding in that scope
+it will only be present in that scope and not anywhere else
+
+global keyword: introduces bindings from the global scope into another scope
+
+nonlocal keyword: inserts a name binding from an enclosing scope to the local namespace
+
+'''
+def enclosing():
+    message = 'enclosing'
+
+    def local():
+        global message #once this is done, and local() is called, the global binding will be updated
+        message = 'local' #only present in this scope
+
+'''
+function decorators: modify or enhance an existing function in a non-intrusive and maintainable way
+--> implemented as a callable that accepts a callable and returns a callable
+i.e. functions that accept a function as an argument and return a function
+
+f is the parameter to escape_unicode: f is the function that needs to be decorated
+local function: wrap --> accepts any number of arguments
+it then calls f i.e. the input function with the arguments received
+wrap will behave just like f i.e. decorated function and will return only ascii characters
+
+'''
+
+#decoartor function
+def escape_unicode(f):
+    def wrap(*args,**kwargs):
+        x = f(*args,**kwargs)
+        return ascii(x)
+    return wrap
+
+@escape_unicode
+def some_city():
+    return 'Mumbai~Ø'
+
+print(some_city())
+
+
+
