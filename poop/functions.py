@@ -258,4 +258,76 @@ print(rotate_list(l))
 trace.enabled = False
 print(rotate_list(l))
 
+'''
+Multiple Decorators: List each decorator on a separate line above the function, they are processed in reverse order i.e starting from function def to outermost decorator
+The callable of each decoartor is passed to the next one above it
+
+Decorators can be applied to functions but can be used to decorate classes as well
+
+'''
+
+tracer = Trace()
+
+@tracer
+@escape_unicode
+def island_name_maker(name):
+    return name + 'Øy'
+
+print(island_name_maker('peepeepoopoo'))
+
+class IslandMaker:
+    def __init__(self, suffix):
+        self.suffix = suffix
+
+    @tracer
+    def make_island(self, name):
+        return name + self.suffix
+
+im = IslandMaker('poop')
+print(im.make_island('peepee'))
+
+'''
+Callable Metadata: Problem:
+by replacing a function with a callable, we lose important metadata about the original function
+therefore, copy the __name__ and __doc__ from wrapped function to the wrapper function
+
+def no_operation(f):
+    def noop_wrap():
+        return f()
+    noop_wrapper.__name__ = f.__name__
+    noop_wrapper.__doc__ = f.__doc__
+    return noop_wrap
+    
+Better way of doing this: is by using the functools.wraps() method --> Replace decorator metadata with that of the decorated callable
+functools.wraps() is itself a decorators that we can apply to our decorator
+
+import functools
+def noop(f):
+    @functools.wraps(f)
+    def noop_wrapper():
+        return f()
+    return noop_wrapper
+'''
+
+"""
+One practical use of decorators is for validating function arguments
+"""
+
+#parameterised decorator
+def check_non_negative(index):
+    def validator(f):
+        def wrap(*args):
+            if args[index] < 0:
+                raise ValueError('Argument {} must be non-negative.'.format(index))
+            return f(*args)
+        return wrap
+    return validator
+
+@check_non_negative(1)
+def create_list(value, size):
+    return [value]*size
+
+create_list('a',3) #3 is the value that will be verified for negative sign
+
+
 
