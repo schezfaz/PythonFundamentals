@@ -229,5 +229,33 @@ hello("Chris")
 print(hello.count)
 
 
+"""
+Using Class Instances as decorators: Python calls the instance's __call__ method with the original function and uses __call__()'s return value as the new function
+--> Creates a collection of functions that you can dynamically control in some way
+"""
+
+#Here the class object itself is not the decorator, instances of this class can be used as decorators
+
+class Trace:
+    def __init__(self):
+        self.enabled = True
+
+    def __call__(self, f):
+        def wrap(*args, **kwargs):
+            if self.enabled:
+                print('Calling {}'.format(f))
+            return f(*args, **kwargs)
+        return wrap
+
+trace = Trace() #creates an instance of Trace
+
+@trace
+def rotate_list(l):
+    return l[1:] + [l[0]]
+
+l = [1,2,3]
+print(rotate_list(l))
+trace.enabled = False
+print(rotate_list(l))
 
 
