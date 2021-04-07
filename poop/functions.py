@@ -201,5 +201,33 @@ def some_city():
 
 print(some_city())
 
+'''
+Classes as Decorators: Classes are callable objects
+--> Functions decorated with a class are replaced by an instance of the class because the function to be decorated will be passed to the constructor and thus the initialiser
+
+Object returned from the decorated must be a callable i.e. the instance resulting from the constructor must be callable i.e. it must support __call__() method
+
+Class Decorators are useful for attaching some extra data to functions
+'''
+
+class CallCount:
+    def __init__(self,f):
+        self.f = f #takes input function f and initialises it as a member attribute
+        self.count = 0
+
+    def __call__(self, *args, **kwargs):
+        self.count +=1
+        return self.f(*args,**kwargs) #returns whatever value f i.e. decorated function produces
+
+@CallCount
+def hello(name):
+    print('Hello, {}!'.format(name))
+
+hello("Schez")
+hello("Chris")
+
+print(hello.count)
+
+
 
 
